@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-interface NavbarProps {
-  activePage: string;
-  onPageChange: (page: string) => void;
-}
-
-const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
+const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovering, setIsHovering] = useState<string | null>(null);
@@ -21,11 +16,10 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const menuItems = [
+    { id: "home", label: "Home", icon: "🏠", path: "/" },
     { id: "schedule", label: "Class Schedule", icon: "📅", path: "/schedule" },
     { id: "budget", label: "Budget Tracker", icon: "💰", path: "/budget" },
     { id: "exam", label: "Exam Generator", icon: "📝", path: "/exam" },
@@ -42,12 +36,10 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="flex justify-between items-center">
+          {/* Logo */}
           <div
             className="group flex items-center space-x-3 cursor-pointer"
-            onClick={() => {
-              onPageChange("home");
-              navigate("/");
-            }}
+            onClick={() => navigate("/")}
           >
             <div className="flex justify-center items-center bg-gradient-to-br from-[#E8D7C3] to-[#DCCFC0] shadow-md group-hover:shadow-lg rounded-xl w-12 h-12 group-hover:rotate-12 transition-all duration-500 transform">
               <span className="text-2xl group-hover:scale-110 transition-transform duration-700">
@@ -64,6 +56,7 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
             </div>
           </div>
 
+          {/* Desktop Menu */}
           <ul className="hidden md:flex items-center space-x-2 bg-white/10 backdrop-blur-sm p-1.5 border border-white/10 rounded-2xl">
             {menuItems.map((item) => (
               <li key={item.id}>
@@ -76,7 +69,6 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
                         : "text-white hover:bg-white/10 hover:shadow-sm"
                     }`
                   }
-                  onClick={() => onPageChange(item.id)}
                   onMouseEnter={() => setIsHovering(item.id)}
                   onMouseLeave={() => setIsHovering(null)}
                 >
@@ -93,12 +85,14 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
             ))}
           </ul>
 
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMenu}
               className="inline-flex justify-center items-center hover:bg-white/10 p-2.5 rounded-xl focus:outline-none text-white transition-all duration-500"
             >
               <span className="sr-only">Open main menu</span>
+              {/* Hamburger Icon */}
               <svg
                 className={`${isMenuOpen ? "hidden" : "block"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
@@ -113,6 +107,7 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
+              {/* Close Icon */}
               <svg
                 className={`${isMenuOpen ? "block" : "hidden"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
@@ -132,6 +127,7 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-700 ease-in-out ${
           isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -149,10 +145,7 @@ const Navbar = ({ activePage, onPageChange }: NavbarProps) => {
                       : "text-white hover:bg-white/10"
                   }`
                 }
-                onClick={() => {
-                  onPageChange(item.id);
-                  setIsMenuOpen(false);
-                }}
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className="bg-white/10 mr-4 p-2 rounded-lg text-xl">
                   {item.icon}

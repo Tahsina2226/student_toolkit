@@ -36,7 +36,6 @@ const Navbar = () => {
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div className="flex justify-between items-center">
-          {/* Logo */}
           <div
             className="group flex items-center space-x-3 cursor-pointer"
             onClick={() => navigate("/")}
@@ -56,7 +55,6 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Menu */}
           <ul className="hidden md:flex items-center space-x-2 bg-white/10 backdrop-blur-sm p-1.5 border border-white/10 rounded-2xl">
             {menuItems.map((item) => (
               <li key={item.id}>
@@ -85,14 +83,12 @@ const Navbar = () => {
             ))}
           </ul>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMenu}
               className="inline-flex justify-center items-center hover:bg-white/10 p-2.5 rounded-xl focus:outline-none text-white transition-all duration-500"
             >
               <span className="sr-only">Open main menu</span>
-              {/* Hamburger Icon */}
               <svg
                 className={`${isMenuOpen ? "hidden" : "block"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +103,6 @@ const Navbar = () => {
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
-              {/* Close Icon */}
               <svg
                 className={`${isMenuOpen ? "block" : "hidden"} h-6 w-6`}
                 xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +122,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-700 ease-in-out ${
           isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"

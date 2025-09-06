@@ -5,6 +5,9 @@ import SchedulePage from "../pages/Schedule/SchedulePage";
 import BudgetPage from "@/pages/Budgets/BudgetPage";
 import ExamQA from "@/pages/ExamQA/ExamQA";
 import StudyPlannerPage from "@/pages/study/StudyPlannerPage";
+import Login from "@/pages/Login/Login";
+import Register from "@/pages/Login/Register";
+import Motivation from "@/pages/motivation/Motivation"; // capitalized
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +19,10 @@ export const router = createBrowserRouter([
       { path: "/budget", element: <BudgetPage /> },
       { path: "/exam", element: <ExamQA /> },
       { path: "/planner", element: <StudyPlannerPage /> },
+
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+      { path: "/motivation", element: <Motivation /> },
     ],
   },
 ]);

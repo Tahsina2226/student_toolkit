@@ -43,6 +43,7 @@ const SchedulePage = () => {
       style={{ backgroundColor: "#DCCFC0" }}
     >
       <div className="space-y-8 mx-auto max-w-7xl">
+        {/* Header */}
         <div className="space-y-3 mb-8 text-center">
           <h1 className="font-bold text-[#5A6D57] text-4xl md:text-5xl">
             📅 Class Schedule
@@ -52,6 +53,7 @@ const SchedulePage = () => {
           </p>
         </div>
 
+        {/* Stats Overview */}
         <div className="gap-5 grid grid-cols-1 md:grid-cols-3 mb-8">
           <div
             className="shadow-md p-5 rounded-2xl text-center"
@@ -84,7 +86,9 @@ const SchedulePage = () => {
           </div>
         </div>
 
+        {/* Main Grid */}
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-12">
+          {/* Add Class Form */}
           <div
             className="lg:col-span-4 shadow-lg p-6 rounded-2xl"
             style={{ backgroundColor: "#A2AF9B" }}
@@ -103,6 +107,7 @@ const SchedulePage = () => {
             <ClassForm onAdded={fetchClasses} userId={userId} />
           </div>
 
+          {/* Class List */}
           <div
             className="lg:col-span-8 shadow-lg p-6 rounded-2xl"
             style={{ backgroundColor: "#A2AF9B" }}
@@ -141,6 +146,7 @@ const SchedulePage = () => {
           </div>
         </div>
 
+        {/* Empty State */}
         {!isLoading && classes.length === 0 && (
           <div
             className="mt-12 p-8 rounded-2xl text-center"

@@ -1,36 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../componetns/context/AuthContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isHovering, setIsHovering] = useState<string | null>(null);
-
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
   const menuItems = [
-    { id: "home", label: "Home", icon: "🏠", path: "/" },
-    { id: "schedule", label: "Class Schedule", icon: "📅", path: "/schedule" },
-    { id: "budget", label: "Budget Tracker", icon: "💰", path: "/budget" },
-    { id: "exam", label: "Exam Generator", icon: "📝", path: "/exam" },
-    { id: "planner", label: "Study Planner", icon: "📚", path: "/planner" },
+    { id: "home", label: "Home", path: "/" },
+    { id: "schedule", label: "Class Schedule", path: "/schedule" },
+    { id: "budget", label: "Budget Tracker", path: "/budget" },
+    { id: "exam", label: "Exam Generator", path: "/exam" },
+    { id: "planner", label: "Study Planner", path: "/planner" },
+    { id: "motivation", label: "Motivation & Tips", path: "/motivation" },
   ];
 
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-500 ${
         isScrolled
-          ? "py-2 bg-gradient-to-r from-[#7D8F69] to-[#A2AF9B] shadow-xl"
+          ? "py-3 bg-gradient-to-r from-[#7D8F69] to-[#A2AF9B] shadow-xl"
           : "py-4 bg-gradient-to-r from-[#8FA37E] to-[#B0BEA9]"
       }`}
     >
@@ -41,12 +38,10 @@ const Navbar = () => {
             onClick={() => navigate("/")}
           >
             <div className="flex justify-center items-center bg-gradient-to-br from-[#E8D7C3] to-[#DCCFC0] shadow-md group-hover:shadow-lg rounded-xl w-12 h-12 group-hover:rotate-12 transition-all duration-500 transform">
-              <span className="text-2xl group-hover:scale-110 transition-transform duration-700">
-                🎓
-              </span>
+              <span className="text-2xl group-hover:scale-110 transition-transform duration-700"></span>
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-white text-xl leading-5 tracking-tight">
+              <span className="font-bold text-white text-base leading-5 tracking-tight">
                 Student<span className="text-[#E8D7C3]">Suite</span>
               </span>
               <span className="opacity-80 mt-1 text-[#E8D7C3] text-xs">
@@ -61,62 +56,64 @@ const Navbar = () => {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `relative flex items-center px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-500 ${
+                    `relative flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-500 ${
                       isActive
                         ? "bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] text-gray-900 shadow-lg transform -translate-y-0.5"
                         : "text-white hover:bg-white/10 hover:shadow-sm"
                     }`
                   }
-                  onMouseEnter={() => setIsHovering(item.id)}
-                  onMouseLeave={() => setIsHovering(null)}
                 >
-                  <span
-                    className={`mr-2 transition-transform duration-300 ${
-                      isHovering === item.id ? "scale-110" : ""
-                    }`}
-                  >
-                    {item.icon}
-                  </span>
                   {item.label}
                 </NavLink>
               </li>
             ))}
+            {user ? (
+              <li className="flex items-center space-x-2 ml-3">
+                <div className="relative">
+                  <div className="flex justify-center items-center bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] rounded-full w-9 h-9 font-bold text-gray-800 text-sm">
+                    {user?.user?.name?.charAt(0) || "U"}
+                  </div>
+                  <div className="-right-1 -bottom-1 absolute bg-green-500 border-2 border-white rounded-full w-3 h-3"></div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-white text-sm">
+                    {user?.user?.name}
+                  </span>
+                  <span className="text-white/70 text-xs">Student</span>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    navigate("/login");
+                  }}
+                  className="flex items-center hover:bg-white/10 px-3 py-2 rounded-xl font-medium text-white text-sm transition-all duration-500"
+                >
+                  Logout
+                </button>
+              </li>
+            ) : (
+              <li>
+                <NavLink
+                  to="/login"
+                  className="flex items-center bg-white/20 hover:bg-white/30 shadow-md hover:shadow-lg px-4 py-2 rounded-xl font-medium text-sm transition-all duration-500"
+                >
+                  Login
+                </NavLink>
+              </li>
+            )}
           </ul>
 
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center space-x-2">
+            {user && (
+              <div className="flex justify-center items-center bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] rounded-full w-8 h-8 font-bold text-gray-800 text-sm">
+                {user?.user?.name?.charAt(0) || "U"}
+              </div>
+            )}
             <button
-              onClick={toggleMenu}
-              className="inline-flex justify-center items-center hover:bg-white/10 p-2.5 rounded-xl focus:outline-none text-white transition-all duration-500"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex justify-center items-center bg-white/10 hover:bg-white/20 rounded-lg focus:outline-none w-10 h-10 text-white text-2xl transition-colors"
             >
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className={`${isMenuOpen ? "hidden" : "block"} h-6 w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-              <svg
-                className={`${isMenuOpen ? "block" : "hidden"} h-6 w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              {isMenuOpen ? "X" : "≡"}
             </button>
           </div>
         </div>
@@ -132,22 +129,58 @@ const Navbar = () => {
             <li key={item.id}>
               <NavLink
                 to={item.path}
+                onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center w-full text-left px-5 py-4 rounded-xl text-base font-medium transition-all duration-500 ${
+                  `flex items-center px-4 py-3 rounded-xl w-full font-medium text-sm text-left transition-all duration-500 ${
                     isActive
-                      ? "bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] text-gray-900 shadow-inner transform -translate-y-0.5"
-                      : "text-white hover:bg-white/10"
+                      ? "bg-white/20 text-white shadow-inner"
+                      : "hover:bg-white/10 text-white"
                   }`
                 }
-                onClick={() => setIsMenuOpen(false)}
               >
-                <span className="bg-white/10 mr-4 p-2 rounded-lg text-xl">
-                  {item.icon}
-                </span>
                 {item.label}
               </NavLink>
             </li>
           ))}
+          {user ? (
+            <li>
+              <div className="flex justify-between items-center bg-white/10 px-3 py-3 rounded-xl">
+                <div className="flex items-center space-x-2">
+                  <div className="flex justify-center items-center bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] rounded-full w-9 h-9 font-bold text-gray-800 text-sm">
+                    {user?.user?.name?.charAt(0) || "U"}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-white text-sm">
+                      {user?.user?.name}
+                    </span>
+                    <span className="text-white/70 text-xs">
+                      Student Account
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsMenuOpen(false);
+                    navigate("/login");
+                  }}
+                  className="flex items-center hover:bg-white/20 p-2 rounded-lg font-medium text-white text-sm transition-all duration-500"
+                >
+                  Logout
+                </button>
+              </div>
+            </li>
+          ) : (
+            <li>
+              <NavLink
+                to="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex justify-center items-center bg-white/20 hover:bg-white/30 shadow-md hover:shadow-lg px-4 py-3 rounded-xl w-full font-medium text-sm transition-all duration-500"
+              >
+                Login
+              </NavLink>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

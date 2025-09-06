@@ -35,16 +35,14 @@ const StudyPlannerPage = () => {
           Break down your big study goals into smaller, manageable tasks.
         </p>
 
-        <div className="gap-8 grid grid-cols-1 lg:grid-cols-3">
-          {/* Left: Form */}
-          <div className="lg:col-span-1 bg-[#DCCFC0] shadow-lg p-6 rounded-2xl">
+        <div className="gap-8 grid grid-cols-1 lg:grid-cols-4">
+          <div className="lg:col-span-2 bg-[#DCCFC0] shadow-lg p-6 rounded-2xl">
             <h2 className="mb-4 font-semibold text-[#2D2A26] text-xl">
               ➕ Add New Plan
             </h2>
             <StudyForm onAdded={fetchPlans} />
           </div>
 
-          {/* Right: List */}
           <div className="lg:col-span-2 bg-white shadow-lg p-6 rounded-2xl">
             <h2 className="mb-4 font-semibold text-[#2D2A26] text-xl">
               📋 Your Plans

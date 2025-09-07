@@ -1,9 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "../../api/axios";
-
-interface Props {
-  onAdded: () => void;
-}
 
 interface FormData {
   subject: string;
@@ -15,15 +11,20 @@ interface FormData {
   deadline: string;
 }
 
-const StudyForm = ({ onAdded }: Props) => {
+interface Props {
+  onAdded: () => void;
+  initialData?: Partial<FormData>;
+}
+
+const StudyForm = ({ onAdded, initialData }: Props) => {
   const [form, setForm] = useState<FormData>({
-    subject: "",
-    topic: "",
-    priority: "medium",
-    day: "",
-    startTime: "",
-    durationMinutes: 30,
-    deadline: "",
+    subject: initialData?.subject || "",
+    topic: initialData?.topic || "",
+    priority: initialData?.priority || "medium",
+    day: initialData?.day || "",
+    startTime: initialData?.startTime || "",
+    durationMinutes: initialData?.durationMinutes || 30,
+    deadline: initialData?.deadline || "",
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
@@ -41,21 +42,31 @@ const StudyForm = ({ onAdded }: Props) => {
     "Sunday",
   ];
 
+  useEffect(() => {
+    if (initialData) {
+      setForm((prev) => ({ ...prev, ...initialData }));
+    }
+  }, [initialData]);
+
   const validateForm = () => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
     if (!form.subject.trim()) newErrors.subject = "Subject is required";
-    if (form.durationMinutes <= 0) newErrors.durationMinutes = "Duration must be greater than 0";
+    if (form.durationMinutes <= 0)
+      newErrors.durationMinutes = "Duration must be greater than 0";
     if (form.deadline) {
       const deadlineDate = new Date(form.deadline);
       const today = new Date();
-      today.setHours(0,0,0,0);
-      if (deadlineDate < today) newErrors.deadline = "Deadline cannot be in the past";
+      today.setHours(0, 0, 0, 0);
+      if (deadlineDate < today)
+        newErrors.deadline = "Deadline cannot be in the past";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (errors[name as keyof FormData]) {
       setErrors((prev) => {
@@ -75,7 +86,11 @@ const StudyForm = ({ onAdded }: Props) => {
     if (!validateForm()) return;
     setIsSubmitting(true);
     try {
-      await axiosInstance.post("/study", form);
+      if (initialData && initialData.subject) {
+        await axiosInstance.put(`/study/${initialData.subject}`, form);
+      } else {
+        await axiosInstance.post("/study", form);
+      }
       setForm({
         subject: "",
         topic: "",
@@ -88,7 +103,7 @@ const StudyForm = ({ onAdded }: Props) => {
       onAdded();
     } catch (err) {
       console.error(err);
-      alert("Failed to add study plan");
+      alert("Failed to add/update study plan");
     } finally {
       setIsSubmitting(false);
     }
@@ -98,14 +113,23 @@ const StudyForm = ({ onAdded }: Props) => {
     <div className="flex justify-center bg-[#FAF9EE] px-4 py-8">
       <div className="bg-[#A2AF9B] shadow-lg rounded-xl w-full max-w-4xl overflow-hidden">
         <div className="p-4 text-[#FAF9EE]">
-          <h2 className="font-bold text-xl">📚 Create New Study Plan</h2>
-          <p className="opacity-90 text-xs">Organize your study schedule effectively</p>
+          <h2 className="font-bold text-xl">
+            📚 {initialData ? "Edit Study Plan" : "Create New Study Plan"}
+          </h2>
+          <p className="opacity-90 text-xs">
+            Organize your study schedule effectively
+          </p>
         </div>
 
         <div className="bg-white p-6">
-          <form onSubmit={handleSubmit} className="gap-6 grid grid-cols-1 md:grid-cols-2">
+          <form
+            onSubmit={handleSubmit}
+            className="gap-6 grid grid-cols-1 md:grid-cols-2"
+          >
             <div>
-              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">Subject *</label>
+              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">
+                Subject *
+              </label>
               <input
                 type="text"
                 name="subject"
@@ -116,11 +140,15 @@ const StudyForm = ({ onAdded }: Props) => {
                   errors.subject ? "border-red-500" : "border-[#3E4B3E]"
                 }`}
               />
-              {errors.subject && <p className="mt-1 text-red-500 text-sm">{errors.subject}</p>}
+              {errors.subject && (
+                <p className="mt-1 text-red-500 text-sm">{errors.subject}</p>
+              )}
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">Topic</label>
+              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">
+                Topic
+              </label>
               <input
                 type="text"
                 name="topic"
@@ -132,7 +160,9 @@ const StudyForm = ({ onAdded }: Props) => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">Priority</label>
+              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">
+                Priority
+              </label>
               <select
                 name="priority"
                 value={form.priority}
@@ -146,7 +176,9 @@ const StudyForm = ({ onAdded }: Props) => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">Day of Study</label>
+              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">
+                Day of Study
+              </label>
               <select
                 name="day"
                 value={form.day}
@@ -154,12 +186,18 @@ const StudyForm = ({ onAdded }: Props) => {
                 className="px-4 py-3 border border-[#3E4B3E] focus:border-[#3E4B3E] rounded-lg focus:ring-[#3E4B3E] focus:ring-2 w-full transition"
               >
                 <option value="">Select a day</option>
-                {daysOfWeek.map((d) => <option key={d} value={d}>{d}</option>)}
+                {daysOfWeek.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">Start Time</label>
+              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">
+                Start Time
+              </label>
               <input
                 type="time"
                 name="startTime"
@@ -170,7 +208,9 @@ const StudyForm = ({ onAdded }: Props) => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">Duration (minutes) *</label>
+              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">
+                Duration (minutes) *
+              </label>
               <input
                 type="number"
                 name="durationMinutes"
@@ -181,11 +221,17 @@ const StudyForm = ({ onAdded }: Props) => {
                   errors.durationMinutes ? "border-red-500" : "border-[#3E4B3E]"
                 }`}
               />
-              {errors.durationMinutes && <p className="mt-1 text-red-500 text-sm">{errors.durationMinutes}</p>}
+              {errors.durationMinutes && (
+                <p className="mt-1 text-red-500 text-sm">
+                  {errors.durationMinutes}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">Deadline</label>
+              <label className="block mb-1 font-medium text-[#3E4B3E] text-sm">
+                Deadline
+              </label>
               <input
                 type="date"
                 name="deadline"
@@ -195,7 +241,9 @@ const StudyForm = ({ onAdded }: Props) => {
                   errors.deadline ? "border-red-500" : "border-[#3E4B3E]"
                 }`}
               />
-              {errors.deadline && <p className="mt-1 text-red-500 text-sm">{errors.deadline}</p>}
+              {errors.deadline && (
+                <p className="mt-1 text-red-500 text-sm">{errors.deadline}</p>
+              )}
             </div>
 
             <div className="flex gap-3 md:col-span-2 mt-4">
@@ -208,7 +256,13 @@ const StudyForm = ({ onAdded }: Props) => {
                     : "bg-[#3E4B3E] hover:opacity-90 shadow-md"
                 }`}
               >
-                {isSubmitting ? "Adding..." : "Add Study Plan"}
+                {isSubmitting
+                  ? initialData
+                    ? "Updating..."
+                    : "Adding..."
+                  : initialData
+                  ? "Update Study Plan"
+                  : "Add Study Plan"}
               </button>
             </div>
           </form>

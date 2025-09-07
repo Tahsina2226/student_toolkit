@@ -13,7 +13,7 @@ const QuestionForm: React.FC<Props> = ({
 }) => {
   const [question, setQuestion] = useState(initialData?.question || "");
   const [type, setType] = useState(initialData?.type || "MCQ");
-  const [options, setOptions] = useState(
+  const [options, setOptions] = useState<string[]>(
     initialData?.options || ["", "", "", ""]
   );
   const [answer, setAnswer] = useState(initialData?.answer || "");
@@ -211,7 +211,7 @@ const QuestionForm: React.FC<Props> = ({
                   )}
                 </div>
 
-                {options.map((opt, i) => (
+                {options.map((opt: string, i: number) => (
                   <div key={i} className="flex items-center gap-3">
                     <input
                       type="radio"

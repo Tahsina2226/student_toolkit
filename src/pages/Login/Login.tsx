@@ -1,7 +1,9 @@
-import { useState, useContext, FormEvent } from "react";
+import { useState, useContext } from "react";
+import type { FormEvent } from "react";
 import { AuthContext } from "../../componetns/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axios";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,10 +17,14 @@ const Login = () => {
 
     try {
       const res = await axiosInstance.post("/auth/login", { email, password });
+
       const userData = {
-        user: res.data.user,
+        id: res.data.user.id,
+        name: res.data.user.name,
+        email: res.data.user.email,
         token: res.data.token,
       };
+
       login(userData);
       navigate("/");
     } catch (err: any) {

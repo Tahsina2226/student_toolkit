@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import axiosInstance from "../api/axios";
+import axiosInstance from "../../api/axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -45,7 +44,6 @@ const ClassList = ({ classes, onDeleted }: ClassListProps) => {
 
   const handleDelete = async (id?: string) => {
     if (!id) return;
-
     const result = await MySwal.fire({
       title: "Are you sure?",
       text: "Do you really want to delete this class?",
@@ -56,9 +54,7 @@ const ClassList = ({ classes, onDeleted }: ClassListProps) => {
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "Cancel",
     });
-
     if (!result.isConfirmed) return;
-
     setIsDeleting(id);
     try {
       await axiosInstance.delete(`/classes/${id}`);
@@ -108,10 +104,8 @@ const ClassList = ({ classes, onDeleted }: ClassListProps) => {
     const [hours, minutes] = time.split(":").map(Number);
     const classTime = new Date();
     classTime.setHours(hours, minutes, 0, 0);
-
     const diff = classTime.getTime() - currentTime.getTime();
     if (diff <= 0) return "Started";
-
     const hoursLeft = Math.floor(diff / 1000 / 60 / 60);
     const mins = Math.floor((diff / 1000 / 60) % 60);
     const secs = Math.floor((diff / 1000) % 60);
@@ -122,18 +116,19 @@ const ClassList = ({ classes, onDeleted }: ClassListProps) => {
   const getAlertClass = (startTime: string, endTime: string) => {
     const [sh, sm] = startTime.split(":").map(Number);
     const [eh, em] = endTime.split(":").map(Number);
-
     const startDate = new Date();
     startDate.setHours(sh, sm, 0, 0);
-
     const endDate = new Date();
     endDate.setHours(eh, em, 0, 0);
 
-    if (currentTime >= startDate && currentTime <= endDate)
+    if (
+      currentTime.getTime() >= startDate.getTime() &&
+      currentTime.getTime() <= endDate.getTime()
+    )
       return "bg-[#A2AF9B] text-white";
     if (
-      currentTime >= startDate.getTime() - 5 * 60 * 1000 &&
-      currentTime < startDate.getTime()
+      currentTime.getTime() >= startDate.getTime() - 5 * 60 * 1000 &&
+      currentTime.getTime() < startDate.getTime()
     )
       return "bg-yellow-400 text-gray-800";
     return "bg-[#DCCFC0] text-gray-700";
@@ -148,7 +143,6 @@ const ClassList = ({ classes, onDeleted }: ClassListProps) => {
       {daysOfWeek.map((day) => {
         const dayClasses = classes.filter((c) => c.day === day);
         const isExpanded = expandedDay === day;
-
         return (
           <div
             key={day}
@@ -182,7 +176,6 @@ const ClassList = ({ classes, onDeleted }: ClassListProps) => {
                 </svg>
               </div>
             </div>
-
             {isExpanded && (
               <div className="bg-[#F8F6F2] p-4">
                 {dayClasses.length === 0 ? (
@@ -246,7 +239,6 @@ const ClassList = ({ classes, onDeleted }: ClassListProps) => {
                           <p className="text-sm">
                             Instructor: {cls.instructor}
                           </p>
-
                           {editingId === cls._id && (
                             <div className="bg-white/90 mt-2 p-4 border-gray-200 border-t rounded-lg">
                               <h6 className="mb-3 font-bold text-gray-700">

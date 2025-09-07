@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axiosInstance from "../api/axios";
+import axiosInstance from "../../api/axios";
 
 interface ClassFormProps {
   onAdded: () => void;

@@ -1,19 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import IncomeForm from "../../componetns/budget/IncomeForm";
 import IncomeList from "../../componetns/budget/IncomeList";
 import ExpenseForm from "../../componetns/budget/ExpenseForm";
 import ExpenseList from "../../componetns/budget/ExpenseList";
 import Summary from "../../componetns/budget/Summary";
 import axiosInstance from "../../api/axios";
+import { AuthContext } from "../../componetns/context/AuthContext";
 
 const BudgetPage = () => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [incomes, setIncomes] = useState<any[]>([]);
   const [expenses, setExpenses] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("summary");
 
   const fetchIncomes = async () => {
     try {
-      const res = await axiosInstance.get("/income");
+      if (!user) return;
+      const res = await axiosInstance.get("/income", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       setIncomes(res.data);
     } catch (error) {
       console.error("Error fetching incomes:", error);
@@ -22,7 +29,10 @@ const BudgetPage = () => {
 
   const fetchExpenses = async () => {
     try {
-      const res = await axiosInstance.get("/expenses");
+      if (!user) return;
+      const res = await axiosInstance.get("/expenses", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
       setExpenses(res.data);
     } catch (error) {
       console.error("Error fetching expenses:", error);
@@ -30,9 +40,37 @@ const BudgetPage = () => {
   };
 
   useEffect(() => {
-    fetchIncomes();
-    fetchExpenses();
-  }, []);
+    if (user) {
+      fetchIncomes();
+      fetchExpenses();
+    }
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center bg-[#FAF9EE] min-h-screen">
+        <div className="bg-white shadow-2xl p-8 border border-gray-200 rounded-2xl max-w-md text-center">
+          <div className="flex justify-center mb-4">
+            <div className="flex justify-center items-center bg-red-100 shadow-md rounded-full w-16 h-16 text-red-500">
+              🔒
+            </div>
+          </div>
+          <h2 className="mb-2 font-bold text-gray-800 text-2xl">
+            Access Restricted
+          </h2>
+          <p className="mb-6 text-gray-600">
+            Please login to view and manage your budget.
+          </p>
+          <button
+            onClick={() => navigate("/login")}
+            className="bg-[#A2AF9B] hover:bg-[#8b9a83] shadow-md px-6 py-3 rounded-lg font-semibold text-white transition duration-300"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const totalIncome = incomes.reduce((sum, inc) => sum + inc.amount, 0);
   const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
@@ -65,7 +103,7 @@ const BudgetPage = () => {
         </div>
 
         <div className="p-6">
-          {(activeTab === "summary" || activeTab === "all") && (
+          {activeTab === "summary" && (
             <div className="mb-8">
               <h2 className="mb-4 font-semibold text-[#FAF9EE] text-xl">
                 Financial Overview
@@ -76,7 +114,7 @@ const BudgetPage = () => {
             </div>
           )}
 
-          {(activeTab === "income" || activeTab === "all") && (
+          {activeTab === "income" && (
             <div className="mb-8">
               <div className="flex items-center mb-4">
                 <div className="bg-[#FAF9EE] mr-3 rounded-full w-1 h-8"></div>
@@ -93,7 +131,7 @@ const BudgetPage = () => {
             </div>
           )}
 
-          {(activeTab === "expenses" || activeTab === "all") && (
+          {activeTab === "expenses" && (
             <div className="mb-8">
               <div className="flex items-center mb-4">
                 <div className="bg-[#FAF9EE] mr-3 rounded-full w-1 h-8"></div>

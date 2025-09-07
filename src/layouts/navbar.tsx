@@ -71,13 +71,13 @@ const Navbar = () => {
               <li className="flex items-center space-x-2 ml-3">
                 <div className="relative">
                   <div className="flex justify-center items-center bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] rounded-full w-9 h-9 font-bold text-gray-800 text-sm">
-                    {user?.user?.name?.charAt(0) || "U"}
+                    {user?.name?.charAt(0) || "U"}
                   </div>
                   <div className="-right-1 -bottom-1 absolute bg-green-500 border-2 border-white rounded-full w-3 h-3"></div>
                 </div>
                 <div className="flex flex-col">
                   <span className="font-medium text-white text-sm">
-                    {user?.user?.name}
+                    {user?.name}
                   </span>
                   <span className="text-white/70 text-xs">Student</span>
                 </div>
@@ -106,7 +106,7 @@ const Navbar = () => {
           <div className="md:hidden flex items-center space-x-2">
             {user && (
               <div className="flex justify-center items-center bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] rounded-full w-8 h-8 font-bold text-gray-800 text-sm">
-                {user?.user?.name?.charAt(0) || "U"}
+                {user?.name?.charAt(0) || "U"}
               </div>
             )}
             <button
@@ -147,11 +147,11 @@ const Navbar = () => {
               <div className="flex justify-between items-center bg-white/10 px-3 py-3 rounded-xl">
                 <div className="flex items-center space-x-2">
                   <div className="flex justify-center items-center bg-gradient-to-r from-[#E8D7C3] to-[#DCCFC0] rounded-full w-9 h-9 font-bold text-gray-800 text-sm">
-                    {user?.user?.name?.charAt(0) || "U"}
+                    {user?.name?.charAt(0) || "U"}
                   </div>
                   <div className="flex flex-col">
                     <span className="font-medium text-white text-sm">
-                      {user?.user?.name}
+                      {user?.name}
                     </span>
                     <span className="text-white/70 text-xs">
                       Student Account

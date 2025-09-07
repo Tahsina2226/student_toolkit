@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axios";
-import ClassForm from "../../componetns/ScheduleForm";
-import ClassList from "../../componetns/SheduleList";
+import ClassForm from "../../componetns/shedules/ScheduleForm";
+import ClassList from "../../componetns/shedules/SheduleList";
+import { AuthContext } from "../../componetns/context/AuthContext";
 
 interface ClassItem {
   _id?: string;
@@ -15,15 +17,20 @@ interface ClassItem {
 }
 
 const SchedulePage = () => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const userId = "user123";
 
   const fetchClasses = async () => {
+    if (!user) return;
     try {
       setIsLoading(true);
       const res = await axiosInstance.get<ClassItem[]>(
-        `/classes?userId=${userId}`
+        `/classes?userId=${user.id}`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
       );
       setClasses(res.data);
     } catch (error) {
@@ -35,7 +42,33 @@ const SchedulePage = () => {
 
   useEffect(() => {
     fetchClasses();
-  }, []);
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center bg-[#FAF9EE] min-h-screen">
+        <div className="bg-white shadow-2xl p-8 border border-gray-200 rounded-2xl max-w-md text-center">
+          <div className="flex justify-center mb-4">
+            <div className="flex justify-center items-center bg-red-100 shadow-md rounded-full w-16 h-16 text-red-500">
+              🔒
+            </div>
+          </div>
+          <h2 className="mb-2 font-bold text-gray-800 text-2xl">
+            Access Restricted
+          </h2>
+          <p className="mb-6 text-gray-600">
+            Please login to view your class schedule.
+          </p>
+          <button
+            onClick={() => navigate("/login")}
+            className="bg-[#A2AF9B] hover:bg-[#8b9a83] shadow-md px-6 py-3 rounded-lg font-semibold text-white transition duration-300"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -43,7 +76,6 @@ const SchedulePage = () => {
       style={{ backgroundColor: "#DCCFC0" }}
     >
       <div className="space-y-8 mx-auto max-w-7xl">
-        {/* Header */}
         <div className="space-y-3 mb-8 text-center">
           <h1 className="font-bold text-[#5A6D57] text-4xl md:text-5xl">
             📅 Class Schedule
@@ -53,7 +85,6 @@ const SchedulePage = () => {
           </p>
         </div>
 
-        {/* Stats Overview */}
         <div className="gap-5 grid grid-cols-1 md:grid-cols-3 mb-8">
           <div
             className="shadow-md p-5 rounded-2xl text-center"
@@ -86,9 +117,7 @@ const SchedulePage = () => {
           </div>
         </div>
 
-        {/* Main Grid */}
         <div className="gap-6 grid grid-cols-1 lg:grid-cols-12">
-          {/* Add Class Form */}
           <div
             className="lg:col-span-4 shadow-lg p-6 rounded-2xl"
             style={{ backgroundColor: "#A2AF9B" }}
@@ -104,10 +133,9 @@ const SchedulePage = () => {
                 Add New Class
               </h2>
             </div>
-            <ClassForm onAdded={fetchClasses} userId={userId} />
+            <ClassForm onAdded={fetchClasses} userId={user.id} />
           </div>
 
-          {/* Class List */}
           <div
             className="lg:col-span-8 shadow-lg p-6 rounded-2xl"
             style={{ backgroundColor: "#A2AF9B" }}
@@ -146,7 +174,6 @@ const SchedulePage = () => {
           </div>
         </div>
 
-        {/* Empty State */}
         {!isLoading && classes.length === 0 && (
           <div
             className="mt-12 p-8 rounded-2xl text-center"

@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import type { FormEvent } from "react";
 import { AuthContext } from "../../componetns/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axiosInstance from "../../api/axios";
 
 const Login = () => {
@@ -94,6 +94,17 @@ const Login = () => {
             </button>
           </div>
         </form>
+
+        {/* Register link */}
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
+          <Link
+            to="/register"
+            className="text-[#7D8F69] font-medium hover:underline"
+          >
+            Register here
+          </Link>
+        </p>
       </div>
     </div>
   );

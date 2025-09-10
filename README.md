@@ -113,25 +113,63 @@
 
 STUDENT-TOOLKIT/
 ├── src/
+│   ├── api/
+│   │   └── axios.ts
+│   ├── assets/
 │   ├── components/
 │   │   ├── budget/
-│   │   ├── ExamQA/
+│   │   │   ├── ExpenseForm.tsx
+│   │   │   ├── ExpenseList.tsx
+│   │   │   ├── IncomeForm.tsx
+│   │   │   ├── IncomeList.tsx
+│   │   │   └── Summary.tsx
+│   │   ├── context/
+│   │   │   └── AuthContext.tsx
+│   │   ├── ExamAQ/
+│   │   │   ├── QuestionForm.tsx
+│   │   │   └── Questionlist.tsx
+│   │   ├── Home/
+│   │   │   └── Hero.tsx
 │   │   ├── motivation/
-│   │   ├── shedules/
+│   │   │   └── MotivationCard.tsx
+│   │   ├── schedules/
+│   │   │   ├── ScheduleForm.tsx
+│   │   │   └── ScheduleList.tsx
+│   │   ├── Study/
+│   │   │   ├── StudyCard.tsx
+│   │   │   ├── StudyForm.tsx
+│   │   │   └── StudyList.tsx
 │   │   └── layouts/
+│   │       ├── footer.tsx
+│   │       └── navbar.tsx
+│   ├── lib/
 │   ├── pages/
 │   │   ├── Budgets/
+│   │   │   └── BudgetPage.tsx
 │   │   ├── ExamQA/
+│   │   │   └── ExamQA.tsx
 │   │   ├── Home/
+│   │   │   └── Home.tsx
 │   │   ├── Login/
+│   │   │   ├── Login.tsx
+│   │   │   └── Register.tsx
 │   │   ├── motivation/
+│   │   │   └── Motivation.tsx
 │   │   ├── Schedule/
+│   │   │   └── SchedulePage.tsx
 │   │   └── study/
-├── routes/       # Backend API routes
-├── App.tsx
-├── main.tsx
-└── README.md
-
+│   │       └── StudyPlannerPage.tsx
+│   ├── routes/
+│   │   └── routes.tsx
+│   ├── App.css
+│   ├── App.tsx
+│   ├── index.css
+│   ├── main.tsx
+│   └── vite-env.d.ts
+├── .gitignore
+├── components.json
+├── eslint.config.js
+└── index.html
 ````
 
 ---
